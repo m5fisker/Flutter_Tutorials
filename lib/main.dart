@@ -20,8 +20,8 @@ class _classTestState extends State<classTest> {
     Quote(author: 'Soorya', q: 'Ok getting the hang of it now'),
   ];
 
-  Widget quoteFunction(quote) {
-    return NewWidget(quote: quote);
+  Widget quoteFunction(quote,  {required Function() delete}) {
+    return NewWidget(quote: quote, delete: delete,);
   }
 
   @override
@@ -33,14 +33,24 @@ class _classTestState extends State<classTest> {
         ),
         body: Container(
             child: Column(
-          children: quotes.map((quote) => quoteFunction(quote)).toList(),
+          children: quotes.map((quote) => quoteFunction(
+            quote,
+            delete:()
+            {
+              setState(() {
+                quotes.remove(quote);
+              }); 
+            }
+          )).toList(),
         )));
   }
 }
 
 class NewWidget extends StatelessWidget {
   final Quote quote;
-  NewWidget({required this.quote});
+  final VoidCallback delete;
+  NewWidget({required this.quote, required this.delete});
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +78,12 @@ class NewWidget extends StatelessWidget {
                 color: Colors.grey.shade800,
               ),
             ),
+            SizedBox(height: 8.0,),
+            TextButton.icon(
+              onPressed: delete,
+               icon: Icon(Icons.delete) ,
+                label: Text('Delete Quote'),
+              ),
           ],
         ),
       ),
